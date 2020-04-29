@@ -23,8 +23,6 @@ app.put('/user/:id', (req, res) => {
     res.json({
         id //Not necessary add a value this is automatically added
     })
-
-
 })
 
 app.post('/user/', (req, res) => {

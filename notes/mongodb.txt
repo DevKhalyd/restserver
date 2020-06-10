@@ -1,0 +1,16 @@
+To connect with mongodb you need to run the .exe  like: 
+
+Path where is the mongodb (In this machine):
+D:\DeveloperSoftware\MongoDB\Server\4.2\bin\mongo.exe
+
+
+
+Or see the docs. 
+ 
+This normally run on the port 27017
+
+
+https://www.npmjs.com/package/mongoose
+
+Info to use mongodb with nodejs
+

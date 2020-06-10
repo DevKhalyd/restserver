@@ -1,55 +1,43 @@
+
+//TODO: Make a README when this projects is finished
 //This makes the same thing than https library
+require('./config/config')
 const express = require('express')
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 //With bodyparser I can read the body from a request
-
-require('./config/config')
-
 const app = express()
+
+let database = 'todoapp' //Database name
+let port = '27017' //Port
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
-//This '/' is the adress to make a request
-app.get('/user', function (req, res) {
-    res.json('Getting an user specified')
-})
+//setup config...
+app.use(require('./routes/index.js'))//GET,PUT,ETC
 
 
-app.put('/user/:id', (req, res) => {
+//Last version not allow this
+/*mongoose.connect(`mongodb://localhost:${port}/${database}`, (err, res) => {
 
-    let id = req.params.id
-    res.json({
-        id //Not necessary add a value this is automatically added
-    })
-})
+if (err)  throw new Error(`Logs: ${err}`)
 
-app.post('/user/', (req, res) => {
+console.log(`Connection established \n ${res}`)
 
-    let body = req.body
+})*/
 
-    let name = body.name
-    let erroCode = 400
-
-    //In postman x-wwwform=rlendocded
-
-    if (name === undefined) {
-
-        res.status(erroCode).json(
-            {
-                err: 400,
-                msg: 'We need a name to make insertion'
-            }
-        )
-    } else {
-        res.json({
-            body
-        })
-    }
-})
+ mongoose.connect(`mongodb://localhost:${port}/${database}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 
-app.listen(process.env.PORT,() => {
+app.listen(process.env.PORT, () => {
     console.log('Listen at port :', process.env.PORT);
 })
+
+

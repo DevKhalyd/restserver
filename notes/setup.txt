@@ -1,0 +1,16 @@
+First we should init git then upload to github.
+
+If I need to know something about git I should see the docs
+How to start with heroku
+
+Heroku docs: https://devcenter.heroku.com/articles/getting-started-with-nodejs
+
+Here is how to deploy a heroku app
+
+To lift up the server. We need to add the command start in scripts...
+Like: nodee app (or where is the main file)
+
+The command: git push heroku master is not updating on github 
+just in heroku servers. If you want to update on GitHub servers just use the command git push
+
+Postman environment variables are importants

@@ -4,15 +4,15 @@ const app = express()
 
 const bcrypt = require('bcrypt')
 const _ = require('underscore')
+const { verifyToken } = require('../middlewares/auth')
 const saltRounds = 10
-
 
 
 //Models (Schema)
 const User = require('../models/User')
 
 //This '/user' is the adress to make a request
-app.get('/user', function (req, res) {
+app.get('/user', verifyToken, function (req, res) {
 
 
     let limit = req.query.limit || 0
@@ -29,12 +29,12 @@ app.get('/user', function (req, res) {
         .limit(limit)
         .exec((err, users) => {
 
-            if (err) {
+            if (err)
                 //Maybe there is not users or the request is bad (404)
                 return res.status(404).json({
                     msg: err,
                 })
-            }
+
 
             User.count({}, (err, count) => {
 
@@ -62,7 +62,7 @@ app.get('/user', function (req, res) {
 
 
 //Update a  user. When use ':' means that url expects a param (Read the docs to more info)
-app.put('/user/:id', (req, res) => {
+app.put('/user/:id', verifyToken, (req, res) => {
 
     const keysAvaibles = [
         'name',
@@ -103,22 +103,26 @@ app.put('/user/:id', (req, res) => {
 })
 
 //Set a new schema inside the db
-app.post('/user/', (req, res) => {
+//Create an user
+app.post('/user/', verifyToken, (req, res) => {
 
     let body = req.body
 
     let erroCode = 400
 
+
+
+    if (body.name === undefined || body.email === undefined || body.password === undefined) return res.status(erroCode).json({
+        err: 404,
+        msg: 'Data is missing'
+    })
+
     //Model
     let user = new User({
         name: body.name,
+        //Password encripted
         password: bcrypt.hashSync(body.password, saltRounds),
         email: body.email
-    })
-
-    if (body.name === undefined || body.email === undefined) return res.status(erroCode).json({
-        err: 404,
-        msg: 'Data is missing'
     })
 
 
@@ -147,11 +151,12 @@ app.post('/user/', (req, res) => {
 })
 
 
-app.delete('/user/:id', (req, res) => {
+//verifyToken or [middlewares]
+app.delete('/user/:id', verifyToken, (req, res) => {
 
 
     let id = req.params.id
-    
+
 
     User.findByIdAndRemove(id, (err, userRemoved) => {
         if (err) return res.status(erroCode).json({

@@ -95,12 +95,69 @@ app.post('/user/', (req, res) => {
             }
         )
     })
-    //In postman x-wwwform=rlendocded
+    //In postman x-wwwform=rlendocded to send data though body
 })
 ```
 
 If you want an example with more details check [this](https://github.com/DevKhalydIOS/cisa-server)
 
+## Adding a new enverioment variable to HEROKU
+
+With `heroku config` you can see the avaibles variables
+
+To create a new variables use `heroku config:set NAME-VARIABLE="$VALUEVARIABLE"`
+
+**Read the docs for more information**
+
+## Using middlewares
+
+Middlewares are used to run a part of code before antoher code.
+
+This code runs between the step 1 and the step 3 this serves like a bridge between both parts to know if
+the data is valid or not (depends of case)
+
+`middlewares/auth.js`
+
+```javascript
+const jwt = require("jsonwebtoken");
+
+let verifyToken = (req, res, next) => {
+  const token = req.get("token"); //Get the header request
+
+  //Use res if the token is not valid
+
+  jwt.verify(token, process.env.SEED, (err, decoded) => {
+    if (err)
+      return res.status(401).json({
+        summary: "Invalid token",
+        err,
+      });
+
+    console.log("DATA decoded from TOKEN");
+    console.log(decoded);
+    next();
+  });
+};
+
+module.exports = {
+  verifyToken,
+};
+```
+
+`file_where_is_used.js`
+
+```javascript
+//Get the function
+const { verifyToken } = require('../middlewares/auth')
+
+//Using here
+app.get('/user', verifyToken, function (req, res) {
+
+```
+
+## Read tokens and check how are structured
+
+Check this page for more information [JWT](https://jwt.io/)
 
 # How can you give style to a md file?
 
